@@ -11,15 +11,15 @@ class Tabela
   {
     try {
       Transaction::get();
-      $tvbox = new Crud("tvbox");
-      $resultado = $tvbox->select();
+      $consultorio = new Crud("consultorio");
+      $resultado = $consultorio->select();
       $tabela = new Template("view/tabela.html");
       if (is_array($resultado)) {
         $tabela->set("linha", $resultado);
         $this->message = $tabela->saida();
       } else {
-        $this->message = $tvbox->getMessage();
-        $this->error = $tvbox->getError();
+        $this->message = $consultorio->getMessage();
+        $this->error = $consultorio->getError();
       }
     } catch (Exception $e) {
       $this->message = $e->getMessage();
@@ -32,10 +32,10 @@ class Tabela
       try {
         $conexao = Transaction::get();
         $id = $conexao->quote($_GET["id"]);
-        $tvbox = new Crud("tvbox");
-        $tvbox->delete("id = $id");
-        $this->message = $tvbox->getMessage();
-        $this->error = $tvbox->getError();
+        $consultorio = new Crud("consultorio");
+        $consultorio->delete("id = $id");
+        $this->message = $consultorio->getMessage();
+        $this->error = $consultorio->getError();
       } catch (Exception $e) {
         $this->message = $e->getMessage();
         $this->error = true;

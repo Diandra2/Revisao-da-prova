@@ -11,34 +11,34 @@ class Form
   {
     $form = new Template("view/form.html");
     $form->set("id", "");
-    $form->set("modelo", "");
-    $form->set("processador", "");
-    $form->set("sistemaoperacional", "");
+    $form->set("paciente", "");
+    $form->set("idade", "");
+    $form->set("diagnostico", "");
     $this->message = $form->saida();
   }
   public function salvar()
   {
-    if (isset($_POST["modelo"]) && isset($_POST["processador"]) && isset($_POST["sistemaoperacional"])) {
+    if (isset($_POST["paciente"]) && isset($_POST["idade"]) && isset($_POST["diagnostico"])) {
       try {
         $conexao = Transaction::get();
-        $tvbox = new Crud("tvbox");
-        $modelo = $conexao->quote($_POST["modelo"]);
-        $config = $conexao->quote($_POST["processador"]);
-        $sistemaoperacional = $conexao->quote($_POST["sistemaoperacional"]);
+        $consultorio = new Crud("consultorio");
+        $paciente = $conexao->quote($_POST["paciente"]);
+        $config = $conexao->quote($_POST["idade"]);
+        $diagnostico = $conexao->quote($_POST["diagnostico"]);
         if (empty($_POST["id"])) {
-          $tvbox->insert(
-            "modelo, processador, sistemaoperacional",
-            "$modelo, $config, $sistemaoperacional"
+          $consultorio->insert(
+            "paciente, idade, diagnostico",
+            "$paciente, $config, $diagnostico"
           );
         } else {
           $id = $conexao->quote($_POST["id"]);
-          $tvbox->update(
-            "modelo = $modelo, processador = $config, sistemaoperacional = $sistemaoperacional",
+          $consultorio->update(
+            "paciente = $paciente, idade = $config, diagnostico = $diagnostico",
             "id = $id"
           );
         }
-        $this->message = $tvbox->getMessage();
-        $this->error = $tvbox->getError();
+        $this->message = $consultorio->getMessage();
+        $this->error = $consultorio->getError();
       } catch (Exception $e) {
         $this->message = $e->getMessage();
         $this->error = true;
@@ -54,16 +54,16 @@ class Form
       try {
         $conexao = Transaction::get();
         $id = $conexao->quote($_GET["id"]);
-        $tvbox = new Crud("tvbox");
-        $resultado = $tvbox->select("*", "id = $id");
-        if (!$tvbox->getError()) {
+        $consultorio = new Crud("consultorio");
+        $resultado = $consultorio->select("*", "id = $id");
+        if (!$consultorio->getError()) {
           $form = new Template("view/form.html");
-          foreach ($resultado[0] as $cod => $sistemaoperacional) {
-            $form->set($cod, $sistemaoperacional);
+          foreach ($resultado[0] as $cod => $diagnostico) {
+            $form->set($cod, $diagnostico);
           }
           $this->message = $form->saida();
         } else {
-          $this->message = $tvbox->getMessage();
+          $this->message = $consultorio->getMessage();
           $this->error = true;
         }
       } catch (Exception $e) {
